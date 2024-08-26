@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for ((i=7; i<=12; i++)); do
+  pkill -RTMIN+$i dwmblocks
+done

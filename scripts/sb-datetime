@@ -1,7 +1,7 @@
 #!/bin/sh
 # Description: Script to get current date and time
 
-source sb-status2d
+source $HOME/.config/dwmblocks/scripts/sb-status2d 
 
 case "$(date '+%I')" in
     "01") icon_clock="" ;;
@@ -18,4 +18,4 @@ case "$(date '+%I')" in
     "12") icon_clock="" ;;
 esac
 
-printf "%s%s %s%s" "$s2d_color2" "$icon_clock" "$(date '+%a, %H:%M')" "$s2d_reset" && exit 0
+printf "%s%s %s%s" "$s2d_fg0" "$icon_clock" "$(date '+%a %d, %H:%M')" "$s2d_reset" && exit 0

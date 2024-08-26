@@ -1,0 +1,38 @@
+#!/bin/sh
+# Description: Script to get current volume
+
+source $HOME/.config/dwmblocks/scripts/sb-status2d 
+source $HOME/.config/dwmblocks/scripts/utils
+
+
+value="$(pactl get-sink-volume @DEFAULT_SINK@ | grep -P '\d+(?=%)' -o | tail -1)"
+isMuted="$(pactl get-sink-mute @DEFAULT_SINK@ | sed -n 's/.*Mute: \(yes\|no\).*/\1/p')"
+
+if [ "$isMuted" == "yes" ]; then
+    color=$s2d_red1
+    icon_volume="婢"
+elif [ "$value" -gt 100 ]; then
+    color=$s2d_yellow1
+elif [ "$value" == 100 ]; then
+    color=$s2d_green1
+else
+    color=$s2d_blue1
+fi
+
+if [ "$value" -lt 30 ]; then
+    icon_volume="奄"
+elif [ "$value" -lt 60 ]; then
+    icon_volume="奔"
+else
+    icon_volume="墳"
+fi
+
+
+if  [ "$1" == "bar" ]; then
+    bar_icon=$(map_to_unicode $value)
+else
+    bar_icon=""
+fi
+
+printf "%s%s %d%%%s%s" "$color" "$icon_volume" "$value" "$bar_icon" "$s2d_reset"
+

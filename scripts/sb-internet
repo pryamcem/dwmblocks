@@ -1,7 +1,7 @@
 #!/bin/sh
 # Description: Script to get wifi and ethernet status
 
-source sb-status2d
+source $HOME/.config/dwmblocks/scripts/sb-status2d 
 
 show_wname=false
 show_ename=false

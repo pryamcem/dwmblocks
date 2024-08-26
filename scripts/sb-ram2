@@ -1,0 +1,24 @@
+#!/bin/sh
+# Description: Script to get ram usage
+
+source $HOME/.config/dwmblocks/scripts/sb-status2d 
+
+mem_total=$(rg MemTotal /proc/meminfo | awk '{print $2}')
+mem_free=$(rg MemFree /proc/meminfo | awk '{print $2}')
+mem_buffers=$(grep MemBuffers /proc/meminfo | awk '{print $2}')
+mem_cache=$(grep Cached /proc/meminfo | awk '{print $2}' | head -1)
+mem_sreclaimable=$(grep SReclaimable /proc/meminfo | awk '{print $2}')
+mem_shmem=$(grep Shmem /proc/meminfo | awk '{print $2}' | head -1)
+
+# I still don't understand how exactly htop calculates memory usage
+mem_used_mb=$(( (mem_total - mem_free - mem_cache + mem_sreclaimable - mem_shmem) / 1024 ))
+#mem_used_mb=$(( (mem_total - mem_free - mem_buffers - mem_cache)/ 1024 ))
+
+# Check if used memory is greater than or equal to 1024 MB
+if [ $mem_used_mb -ge 1024 ]; then
+    mem_used_gb=$(awk "BEGIN { printf \"%.2f\", $mem_used_mb / 1024 }")
+    echo "$mem_used_gb GB"
+else
+    echo "$mem_used_mb MB"
+fi
+

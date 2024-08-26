@@ -1,37 +1,39 @@
 #!/bin/sh
 # Description: Script to get battery status
 
-source sb-status2d
+source $HOME/.config/dwmblocks/scripts/sb-status2d
+
+function equivalent_icon() {
+    # Determine the proportional character based on input
+    characters=("!󰂎" "" "" "" "" "" "" "" "" "" "")
+    proportional_index=$(($1 * 9 / 100))
+
+    if [ "$1" -gt 100 ]; then
+        echo "${characters[7]}"
+        return
+    fi
+
+    echo "${characters[$proportional_index]}"
+}
 
 for battery in /sys/class/power_supply/BAT?; do
     percent=$(cat "$battery/capacity")  # battery percentage
     status="$(cat "$battery/status")"   # battery status
 
-    [ "$status" = "Charging" ] && icon_charge=" "
-
-    if  [ "$percent" -eq 100 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 90 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 80 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 70 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 60 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 50 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 40 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 30 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 20 ]; then
-        icon_battery=""
-    elif [ "$percent" -ge 10 ]; then
-        icon_battery=""
+    if  [ "$percent" -gt 75 ]; then
+        color=$s2d_green1
+    elif [ "$percent" -gt 45 ]; then
+        color=$s2d_fg0
+    elif [ "$percent" -gt 20 ]; then
+        color=$s2d_yellow1
     else
-        icon_battery=""
+        color=$s2d_red1
     fi
 
-    printf "%s%s%s %d%%%s" "$s2d_color2" "$icon_charge" "$icon_battery" "$percent" "$s2d_reset"
+
+    [ "$status" = "Charging" ] && icon_charge="󱐥"
+
+    icon_battery=$(equivalent_icon $percent)
+
+    printf "%s%s%s %d%%%s" "$color" "$icon_charge" "$icon_battery" "$percent" "$s2d_reset"
 done && exit 0
